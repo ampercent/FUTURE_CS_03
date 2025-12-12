@@ -1,116 +1,97 @@
----
 
-# Secure File Share (Flask + AES)
+  content: |
+    # Secure File Share (Flask + AES)
 
-A secure file sharing web application built with Flask. All uploaded files are encrypted using AES-256-GCM before being stored on the server. This ensures confidentiality and integrity even if server storage is accessed by an unauthorized party.
+    A secure file sharing web application built with Flask. All uploaded files are encrypted using AES-256-GCM before being stored on the server. This ensures confidentiality and integrity even if the storage is accessed by an unauthorized party.
 
-## Features
+    ## Features
 
-* Server-side encryption using AES-256-GCM.
-* Authenticated encryption to detect any modification of stored files.
-* Key derivation using PBKDF2 with a unique salt and a high iteration count.
-* Files are encrypted and decrypted entirely in memory; plaintext files are never written to disk.
-* Filenames are sanitized to prevent directory traversal issues.
-* Simple interface for uploading, listing, and downloading files.
+    - Server-side file encryption using AES-256-GCM  
+    - Authenticated encryption to detect tampering  
+    - Key derivation using PBKDF2 with a unique salt and high iteration count  
+    - Plaintext files never written to disk  
+    - Sanitized filenames to prevent directory traversal  
+    - Simple interface for uploading, listing, and downloading files  
 
-## Technology Stack
+    ## Technology Stack
 
-* Python 3.x
-* Flask
-* PyCryptodome
-* AES-256-GCM encryption
-* PBKDF2-HMAC-SHA256 key derivation
+    - Python 3.x  
+    - Flask  
+    - PyCryptodome  
+    - AES-256-GCM  
+    - PBKDF2-HMAC-SHA256  
 
-## Prerequisites
+    ## Prerequisites
 
-* Python 3.8 or higher
-* pip (Python package installer)
+    - Python 3.8 or higher  
+    - pip package manager  
 
-## Installation
+    ## Installation
 
-1. **Clone the repository**
+    1. Clone the repository:
+       ```bash
+       git clone https://github.com/yourusername/secure-file-share.git
+       cd secure-file-share
+       ```
 
-   ```bash
-   git clone https://github.com/yourusername/secure-file-share.git
-   cd secure-file-share
-   ```
+    2. Create a virtual environment:
+       ```bash
+       python -m venv venv
 
-2. **Set up a virtual environment**
+       # Windows
+       venv\Scripts\activate
 
-   ```bash
-   python -m venv venv
+       # macOS/Linux
+       source venv/bin/activate
+       ```
 
-   # Windows
-   venv\Scripts\activate
+    3. Install dependencies:
+       ```bash
+       pip install -r requirements.txt
+       ```
 
-   # macOS/Linux
-   source venv/bin/activate
-   ```
+    4. Configure environment variables:
 
-3. **Install dependencies**
+       Copy the example environment file:
+       ```bash
+       cp .env.example .env
+       ```
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+       Edit `.env` and set a strong master password:
+       ```
+       FILESTORE_MASTER_PASSWORD=YourStrongPassphrase
+       UPLOAD_FOLDER=uploads
+       ```
 
-4. **Configure environment variables**
+       Note: If the master password is lost, encrypted files cannot be recovered.
 
-   Copy the example environment file:
+    ## Usage
 
-   ```bash
-   cp .env.example .env
-   ```
+    1. Run the application:
+       ```bash
+       python app.py
+       ```
 
-   Then edit `.env` and set a strong master password:
+    2. Open the interface:
+       ```
+       http://localhost:8080
+       ```
 
-   ```ini
-   FILESTORE_MASTER_PASSWORD=YourStrongPassphrase
-   UPLOAD_FOLDER=uploads
-   ```
+    3. Upload and download files:
+       - Upload using the provided form  
+       - Download any stored file to decrypt it  
 
-   Note: If the master password is lost, encrypted files cannot be recovered.
+    ## Security Overview
 
-## Usage
+    - Encryption key derived with PBKDF2 using a 16-byte salt stored in `salt.bin`  
+    - AES-256-GCM provides confidentiality and integrity  
+    - Each file uses a unique 12-byte nonce  
 
-1. **Run the application**
+    File format structure:
+    ```
+    [Nonce (12 bytes)] + [Authentication Tag (16 bytes)] + [Ciphertext]
+    ```
 
-   ```bash
-   python app.py
-   ```
+    ## License
 
-2. **Open the interface**
-   Navigate to:
-
-   ```
-   http://localhost:8080
-   ```
-
-3. **Upload and download files**
-
-   * Upload a file using the provided form.
-   * Download any stored file to decrypt it.
-
-## Security Overview
-
-* The encryption key is derived from the master password using PBKDF2 with a 16-byte salt stored in `salt.bin`.
-* AES-256-GCM is used for both confidentiality and authentication.
-* Each encrypted file uses a unique, random 12-byte nonce.
-* Files are stored in the `uploads/` directory with a `.enc` extension.
-
-File format structure:
-
-```
-[Nonce (12 bytes)] + [Authentication Tag (16 bytes)] + [Ciphertext]
-```
-
-## Contributing
-
-Contributions are welcome. Submit a pull request if you wish to improve or extend the project.
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
----
-
-
+    This project is licensed under the MIT License.
